@@ -1,0 +1,38 @@
+.sequence {
+
+  &__box {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__column {
+    margin: 10px 10px;
+  }
+
+  &__elem {
+    font-size: 16px;
+    text-align: center;
+    margin: 10px 0px;
+    background: #e3e3ff;
+  }
+
+  &__buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  &__button {
+    padding: 0.8rem 0.5rem;
+    align-self: flex-start;
+    flex-shrink: 0;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    line-height: 0.99rem;
+    background-color: #404497;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: 0.5s;
+  }
+}

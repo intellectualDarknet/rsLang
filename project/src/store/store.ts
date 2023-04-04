@@ -6,24 +6,30 @@ import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 import { aggregatedWordsService } from "../services/aggregated-words-service";
 import { statisticsService } from "../services/statistics-service";
 import wordsReducer from "./words-slice";
+import sequenceReducer from "./sequence-slice";
 import authReducer from "./auth-slice";
 import sprintReducer from "./sprint-slice";
 import audioCallSettingsReducer from "./audiocall-settings-slice";
 import audioCallReducer from "./audiocall-slice";
+import keyboardReducer from "./keyboard-slice";
 import statisticsReducer from "./statistics-slice";
+import { sequenceService } from "../services/sequence-service";
 
 export const rootReducer = combineReducers({
   [wordsService.reducerPath]: wordsService.reducer,
+  [sequenceService.reducerPath]: sequenceService.reducer,
   [authService.reducerPath]: authService.reducer,
   [aggregatedWordsService.reducerPath]: aggregatedWordsService.reducer,
   [userWordsService.reducerPath]: userWordsService.reducer,
   [statisticsService.reducerPath]: statisticsService.reducer,
+  sequenceState: sequenceReducer,
   wordsState: wordsReducer,
   authState: authReducer,
   audioCallReducer,
   audioCallSettingsReducer,
   statisticsState: statisticsReducer,
   sprintState: sprintReducer,
+  keyboardState: keyboardReducer,
 });
 export const setupStore = () => {
   return configureStore({
@@ -32,6 +38,7 @@ export const setupStore = () => {
       getDefaultMiddleware({
         serializableCheck: false,
       }).concat(
+        sequenceService.middleware,
         wordsService.middleware,
         authService.middleware,
         aggregatedWordsService.middleware,

@@ -137,6 +137,30 @@ function Sidebar() {
             >
               Textbook
             </NavLink>
+
+            <NavLink
+              onClick={() => setMobileMenuFlag(false)}
+              className={({ isActive }) =>
+                location.pathname.includes("textbook")
+                  ? "sidebar__link sidebar__link_active"
+                  : "sidebar__link"
+              }
+              to="/sequence"
+            >
+              Sequence
+            </NavLink>
+
+            <NavLink
+              onClick={() => setMobileMenuFlag(false)}
+              className={({ isActive }) =>
+                location.pathname.includes("textbook")
+                  ? "sidebar__link sidebar__link_active"
+                  : "sidebar__link"
+              }
+              to="/memo_symbol"
+            >
+              Memo symbol
+            </NavLink>
             {isTablet && isAuth && (
               <NavLink
                 onClick={() => setMobileMenuFlag(false)}

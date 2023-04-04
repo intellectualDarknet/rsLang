@@ -31,9 +31,17 @@ export interface GetWordsRequest {
   filter?: string;
 }
 
+export interface GetSequenceWordsRequest {
+  filter?: string;
+}
+
 export interface GetUserWordsRequest {
   userId: string;
   params: GetWordsRequest;
+}
+
+export class SequenceWord {
+  public word: string;
 }
 
 export class Word {
