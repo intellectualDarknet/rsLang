@@ -11,15 +11,6 @@ const Guess = (props: any): JSX.Element => {
   const lettersClicked: string[] = useAppSelector(
     (state: RootState) => state.keyboardState?.lettersClicked
   );
-
-  // const expectedLetter: string = useAppSelector(
-  //   (state: RootState) => state.keyboardState?.expectedLetter
-  // );
-
-  // const clickedLetter: string = useAppSelector(
-  //   (state: RootState) => state.keyboardState?.clickedLetter
-  // );
-
   const mistakeInLetter: string = useAppSelector(
     (state: RootState) => state.keyboardState?.mistakeInLetter
   );
