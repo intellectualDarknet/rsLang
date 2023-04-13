@@ -56,28 +56,75 @@ const orderredLetters = [
   "s",
   "d",
   "f",
+  "g",
+  "h",
   "j",
   "k",
   "l",
   ";",
-  "g",
-  "h",
+  //
+  "z",
+  "x",
+  "c",
+  "v",
+  "b",
+  "n",
+  "m",
+  //
+  "q",
+  "w",
+  "e",
+  "r",
   "t",
   "y",
-  "b",
-  "n",
-  "r",
   "u",
-  "e",
   "i",
-  "w",
   "o",
-  "q",
   "p",
-  "b",
-  "n",
-  "v",
-  "m",
+  ",",
+  ".",
+  //
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "0",
+  //
+
+  "A",
+  "S",
+  "D",
+  "F",
+  "G",
+  "H",
+  "J",
+  "K",
+  "L",
+  ":",
+  //
+  "Z",
+  "X",
+  "C",
+  "V",
+  "B",
+  "N",
+  "M",
+  //
+  "Q",
+  "W",
+  "E",
+  "R",
+  "T",
+  "Y",
+  "U",
+  "I",
+  "O",
+  "P",
 ];
 
 function defineCases(state: KeyboardState) {
@@ -97,6 +144,7 @@ function defineCases(state: KeyboardState) {
       break;
   }
 }
+
 function randomize(state: KeyboardState) {
   const index = Math.round(Math.random() * (state.keyboardLetters.length - 1));
   console.log("index", index);
@@ -119,8 +167,7 @@ function addkanjiesFunction(state: KeyboardState, payload: any) {
       //   Math.round((40879 - 19968) * Math.random() + 19968)
       // );
       if (
-        !state.kanjies.includes(newValue) &&
-        !newkanjiArray.includes(newValue)
+        !(state.kanjies.includes(newValue) || newkanjiArray.includes(newValue))
       )
         newkanjiArray.push(newValue);
     }
@@ -183,7 +230,20 @@ export const keyboardSlice = createSlice({
 
     clickShift: (state) => {
       state.shift = !state.shift;
-      defineCases(state);
+      switch (state.type) {
+        case "lowercase":
+          state.type = "uppercase";
+          break;
+        case "uppercase":
+          state.type = "lowercase";
+          break;
+        case "capsLowercase":
+          state.type = "capsUppercase";
+          break;
+        case "capsUppercase":
+          state.type = "capsLowercase";
+          break;
+      }
     },
 
     clickCaps: (state) => {

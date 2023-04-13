@@ -28,6 +28,12 @@ interface IFlagObj {
   [key: string]: boolean;
 }
 
+const gridStyles = {
+  gridTemplateColumns: `repeat(8, 1fr)`,
+  gap: "25px",
+  margin: "40px 2vw",
+};
+
 const MemoSymbolGame = (): JSX.Element => {
   const flattedKeyboard = keyboards.flat();
 
@@ -61,11 +67,16 @@ const MemoSymbolGame = (): JSX.Element => {
 
     document.addEventListener("keydown", (event) => {
       if (!flagObject[event.code]) {
+        const transferredLetter = flattedKeyboard.find(
+          (elem) => elem.key === event.code
+        )[language][type];
+        console.log("language", language, "type", type);
+        console.log("transferredLetter", transferredLetter);
         flagObject[event.code] = true;
         switch (event.code) {
           case "ShiftLeft":
           case "ShiftRight":
-            clickShift();
+            dispatch(clickShift());
             break;
           case "CapsLock":
             clickCaps();
@@ -73,11 +84,6 @@ const MemoSymbolGame = (): JSX.Element => {
           case "AltLeft":
           case "AltRight":
             clickAlt();
-            break;
-          case "ControlLeft":
-          case "ControlRight":
-          case "MetaLeft":
-          case "MetaRight":
             break;
           default:
             checkAnswer(event.code);
@@ -88,6 +94,22 @@ const MemoSymbolGame = (): JSX.Element => {
 
     window.addEventListener("keyup", (event) => {
       flagObject[event.code] = false;
+
+      switch (event.code) {
+        case "ShiftLeft":
+        case "ShiftRight":
+          dispatch(clickShift());
+          break;
+        case "CapsLock":
+          clickCaps();
+          break;
+        case "AltLeft":
+        case "AltRight":
+          clickAlt();
+          break;
+        default:
+          break;
+      }
     });
   }, []);
 
@@ -95,6 +117,7 @@ const MemoSymbolGame = (): JSX.Element => {
     const transferredLetter = flattedKeyboard.find(
       (elem) => elem.key === value
     )[language][type];
+    console.log("transferredLetter", transferredLetter);
     dispatch(buttonClick(transferredLetter));
   }
 
@@ -107,7 +130,10 @@ const MemoSymbolGame = (): JSX.Element => {
       <div className="memoSymb__kangi">
         <div className="memoSymb__elem">{kanji}</div>
       </div>
-      <div className="memoSymb__grid">
+      <div
+        className="memoSymb__grid"
+        style={letters.length > 10 ? gridStyles : {}}
+      >
         {letters.map((letter, i) => (
           <Guess key={letter} letter={letter} kanji={kanjies[i]} />
         ))}

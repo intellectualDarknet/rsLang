@@ -15,10 +15,14 @@ const Guess = (props: any): JSX.Element => {
     (state: RootState) => state.keyboardState?.mistakeInLetter
   );
 
+  const expectedLetter: string = useAppSelector(
+    (state: RootState) => state.keyboardState?.expectedLetter
+  );
+
   return (
     <>
       {!lettersClicked.includes(props.letter) ||
-      mistakeInLetter == props.letter ? (
+      (expectedLetter == props.letter && mistakeInLetter) ? (
         <div className="guess">
           {props.letter} = {props.kanji}
         </div>
