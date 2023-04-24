@@ -21,6 +21,7 @@ import {
   clickAlt,
   clickCaps,
   clickShift,
+  changeCase,
 } from "../../../store/keyboard-slice";
 import { keyboards } from "../../../components/keyboard/keyboard.info";
 
@@ -50,11 +51,11 @@ const MemoSymbolGame = (): JSX.Element => {
   );
 
   const language: TLanguage = useAppSelector(
-    (state: RootState) => state.keyboardState?.language
+    (state: RootState) => state.keyboardState.language
   );
 
   const type: TCase = useAppSelector(
-    (state: RootState) => state.keyboardState?.type
+    (state: RootState) => state.keyboardState.type
   );
 
   // blocking muiltiple keyondown keyup
@@ -70,22 +71,23 @@ const MemoSymbolGame = (): JSX.Element => {
         const transferredLetter = flattedKeyboard.find(
           (elem) => elem.key === event.code
         )[language][type];
-        console.log("language", language, "type", type);
-        console.log("transferredLetter", transferredLetter);
         flagObject[event.code] = true;
         switch (event.code) {
           case "ShiftLeft":
           case "ShiftRight":
             dispatch(clickShift());
+            dispatch(changeCase());
             break;
           case "CapsLock":
-            clickCaps();
+            dispatch(clickCaps());
+            dispatch(changeCase());
             break;
           case "AltLeft":
           case "AltRight":
             clickAlt();
             break;
           default:
+            console.log("CheckAnswer", event.code);
             checkAnswer(event.code);
             break;
         }
@@ -101,7 +103,8 @@ const MemoSymbolGame = (): JSX.Element => {
           dispatch(clickShift());
           break;
         case "CapsLock":
-          clickCaps();
+          dispatch(clickCaps());
+          dispatch(changeCase());
           break;
         case "AltLeft":
         case "AltRight":
@@ -114,6 +117,7 @@ const MemoSymbolGame = (): JSX.Element => {
   }, []);
 
   function checkAnswer(value: string) {
+    console.log("language", "type", language, type);
     const transferredLetter = flattedKeyboard.find(
       (elem) => elem.key === value
     )[language][type];

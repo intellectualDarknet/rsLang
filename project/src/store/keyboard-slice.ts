@@ -127,31 +127,10 @@ const orderredLetters = [
   "P",
 ];
 
-function defineCases(state: KeyboardState) {
-  // checkout mb with caps they are different but who knows
-
-  switch (+state.shift + +state.capslock) {
-    case 2:
-      state.type = "lowercase";
-      break;
-    case 1:
-      state.type = "uppercase";
-      break;
-    case 0:
-      state.type = "lowercase";
-      break;
-    default:
-      break;
-  }
-}
-
 function randomize(state: KeyboardState) {
   const index = Math.round(Math.random() * (state.keyboardLetters.length - 1));
-  console.log("index", index);
   state.expectedLetter = state.keyboardLetters[index];
-  console.log("expected", state.keyboardLetters[index]);
   state.kanji = state.kanjies[index];
-  console.log("kanji", state.kanji);
 }
 
 function addkanjiesFunction(state: KeyboardState, payload: any) {
@@ -230,35 +209,38 @@ export const keyboardSlice = createSlice({
 
     clickShift: (state) => {
       state.shift = !state.shift;
-      switch (state.type) {
-        case "lowercase":
-          state.type = "uppercase";
-          break;
-        case "uppercase":
-          state.type = "lowercase";
-          break;
-        case "capsLowercase":
-          state.type = "capsUppercase";
-          break;
-        case "capsUppercase":
-          state.type = "capsLowercase";
-          break;
-      }
     },
 
     clickCaps: (state) => {
       state.capslock = !state.capslock;
-      defineCases(state);
+      console.log("state.capslock", state.capslock);
     },
 
     clickAlt: (state) => {
       state.alt = !state.alt;
-      defineCases(state);
+    },
+
+    changeCase: (state) => {
+      switch (state.type) {
+        case "lowercase":
+        case "capsLowercase":
+          state.type = state.type
+            .replace("lower", "upper")
+            .replace("Lower", "Upper") as "uppercase" | "capsUppercase";
+          break;
+        case "uppercase":
+        case "capsUppercase":
+          state.type = state.type
+            .replace("upper", "lower")
+            .replace("Upper", "Lower") as "lowercase" | "capsLowercase";
+          break;
+      }
+      console.log("caps", state.capslock);
+      console.log("type", state.type);
     },
 
     changeLanguage: (state) => {
       state.language = state.language === "en" ? "ru" : "en";
-      defineCases(state);
     },
   },
 });
@@ -271,6 +253,7 @@ export const {
   addKanjies,
   changeKanji,
   clickAlt,
+  changeCase,
 } = keyboardSlice.actions;
 
 export default keyboardSlice.reducer;
