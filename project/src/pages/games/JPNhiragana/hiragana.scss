@@ -1,0 +1,23 @@
+.hiragana {
+
+  &__kangi {
+    margin: 20px auto 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid black;
+    font-size: 150px;
+    background-color: azure;
+    width: 260px;
+    height: 260px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 25px;
+    border-radius: 10px;
+    margin: 40px 2vw;
+  }
+}

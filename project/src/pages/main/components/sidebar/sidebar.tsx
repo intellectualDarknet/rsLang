@@ -161,6 +161,28 @@ function Sidebar() {
             >
               Memo symbol
             </NavLink>
+            <NavLink
+              onClick={() => setMobileMenuFlag(false)}
+              className={({ isActive }) =>
+                location.pathname.includes("textbook")
+                  ? "sidebar__link sidebar__link_active"
+                  : "sidebar__link"
+              }
+              to="/hiragana"
+            >
+              Hiragana
+            </NavLink>
+            <NavLink
+              onClick={() => setMobileMenuFlag(false)}
+              className={({ isActive }) =>
+                location.pathname.includes("textbook")
+                  ? "sidebar__link sidebar__link_active"
+                  : "sidebar__link"
+              }
+              to="/katakana"
+            >
+              Katakana
+            </NavLink>
             {isTablet && isAuth && (
               <NavLink
                 onClick={() => setMobileMenuFlag(false)}

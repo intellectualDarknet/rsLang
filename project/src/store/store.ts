@@ -13,6 +13,7 @@ import audioCallSettingsReducer from "./audiocall-settings-slice";
 import audioCallReducer from "./audiocall-slice";
 import keyboardReducer from "./keyboard-slice";
 import statisticsReducer from "./statistics-slice";
+import hiraganaReducer from "./hira-kata-slice";
 import { sequenceService } from "../services/sequence-service";
 
 export const rootReducer = combineReducers({
@@ -30,6 +31,7 @@ export const rootReducer = combineReducers({
   statisticsState: statisticsReducer,
   sprintState: sprintReducer,
   keyboardState: keyboardReducer,
+  hiraganaState: hiraganaReducer,
 });
 export const setupStore = () => {
   return configureStore({

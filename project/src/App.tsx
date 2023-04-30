@@ -22,6 +22,8 @@ import Promo from "./pages/main/components/promo/promo";
 import GameResultPage from "./pages/games/audiocall/game-result-page/audiocall-result";
 import SequenceGame from "./pages/games/sequence/sequence-game";
 import MemoSymbolGame from "./pages/games/memo-symbol/memo-game";
+import HiraganaGame from "./pages/games/JPNhiragana/hiragana";
+import KatakanaGame from "./pages/games/JPNkatakana/katakana";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -53,6 +55,8 @@ function App() {
           <Route path="audiocall" element={<AudioCallPage />} />
           <Route path="sequence" element={<SequenceGame />} />
           <Route path="memo_symbol" element={<MemoSymbolGame />} />
+          <Route path="hiragana" element={<HiraganaGame />} />
+          <Route path="katakana" element={<KatakanaGame />} />
           <Route path="sprint" element={<SprintGamePage />} />
           <Route path="savanna" element={<SavannaGame />} />
           <Route path="overlay" element={<GameResultPage />} />
