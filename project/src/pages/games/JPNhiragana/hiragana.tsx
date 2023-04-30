@@ -13,11 +13,11 @@ import {
 } from "../../../store/store";
 import {
   addMistakeInArray,
-  backSpace,
-  changeAnswer,
+  // backSpace,
+  // nullifyAnswer,
+  // changeAnswer,
   deleteMistakeFromArray,
   nextKanji,
-  nullifyAnswer,
 } from "../../../store/hira-kata-slice";
 
 const gridStyles = {
@@ -154,35 +154,33 @@ const HiraganaGame = (): JSX.Element => {
     (state: RootState) => state.hiraganaState
   );
 
+  const [answer, setAnswer] = useState("");
+
   function buttonClick(payload: string) {
     const clickedButton = flattedKeyboard.find((elem) => elem.key === payload)[
       "ru"
     ]["lowercase"];
-    dispatch(changeAnswer(clickedButton));
-    // if (!mistakesArray.includes(answer)) {
-    //   setbtnClickedArray((state) => [...state, clickedButton]);
-    // }
 
-    console.log(
-      "answer.length",
-      inputRef.current.value.length,
-      inputRef.current.value
-    );
-    console.log("expectedAnswer.length", expectedAnswer.length);
-    if (inputRef.current.value.length == expectedAnswer.length) {
+    setAnswer((prev) => prev + clickedButton);
+  }
+
+  useEffect(() => {
+    if (answer.length == expectedAnswer.length) {
       console.log("equality");
-      if (inputRef.current.value == expectedAnswer) {
+      if (answer == expectedAnswer) {
         const index = Math.round(Math.random() * (HiraganaKeys.length - 1));
         const expectedKanji = hiraganaObj?.[HiraganaKeys[index]]?.[1];
         const expectedAnswer = hiraganaObj?.[HiraganaKeys[index]]?.[0];
         dispatch(deleteMistakeFromArray(expectedAnswer));
+        console.log(expectedKanji, expectedAnswer);
         dispatch(nextKanji({ expectedKanji, expectedAnswer }));
       } else {
         dispatch(addMistakeInArray(expectedAnswer));
       }
-      dispatch(nullifyAnswer());
+      setAnswer("");
+      // dispatch(nullifyAnswer());
     }
-  }
+  }, [answer]);
 
   useEffect(() => {
     document.addEventListener("keydown", (event) => {
@@ -196,7 +194,7 @@ const HiraganaGame = (): JSX.Element => {
           case "AltRight":
             break;
           case "Backspace":
-            dispatch(backSpace());
+            // dispatch(backSpace());
             break;
           default:
             buttonClick(event.code);
@@ -224,7 +222,7 @@ const HiraganaGame = (): JSX.Element => {
           />
         ))}
       </div>
-      <input ref={inputRef} type="text" />
+      <div>{answer}</div>
       <Keyboard keyboard={keyboards} />
     </div>
   );

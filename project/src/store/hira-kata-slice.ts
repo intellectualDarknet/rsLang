@@ -5,7 +5,7 @@ export interface IHiraKata {
   mistakesArray: string[];
   expectedKanji: string;
   expectedAnswer: string;
-  answer: string;
+  // answer: string;
 }
 
 interface INext {
@@ -84,7 +84,7 @@ const initialState: IHiraKata = {
   ],
   expectedKanji: "あ",
   expectedAnswer: "а",
-  answer: "",
+  // answer: "",
 };
 
 export const HiraganaSlice = createSlice({
@@ -104,19 +104,19 @@ export const HiraganaSlice = createSlice({
       state.expectedAnswer = payload.expectedAnswer;
     },
 
-    changeAnswer: (state, { payload }: { payload: string }) => {
-      state.answer = state.answer + payload;
-    },
+    // changeAnswer: (state, { payload }: { payload: string }) => {
+    //   state.answer = state.answer + payload;
+    // },
 
-    nullifyAnswer: (state) => {
-      state.answer = "";
-    },
+    // nullifyAnswer: (state) => {
+    //   state.answer = "";
+    // },
 
-    backSpace: (state) => {
-      state.answer.length
-        ? (state.answer = state.answer.slice(0, state.answer.length - 1))
-        : null;
-    },
+    // backSpace: (state) => {
+    //   state.answer.length
+    //     ? (state.answer = state.answer.slice(0, state.answer.length - 1))
+    //     : null;
+    // },
   },
 });
 
@@ -124,9 +124,9 @@ export const {
   addMistakeInArray,
   deleteMistakeFromArray,
   nextKanji,
-  changeAnswer,
-  nullifyAnswer,
-  backSpace,
+  // changeAnswer,
+  // nullifyAnswer,
+  // backSpace,
 } = HiraganaSlice.actions;
 
 export default HiraganaSlice.reducer;
