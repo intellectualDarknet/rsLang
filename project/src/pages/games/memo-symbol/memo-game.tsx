@@ -1,27 +1,26 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import React, { useEffect } from "react";
 import "./memo-game.scss";
 
 import Guess from "./components/guess";
 
-import { AppDispatch, RootState, useAppSelector } from "../../../store/store";
-
-import { Keyboard } from "../../../components/keyboard/keyboard";
 import { useDispatch } from "react-redux";
 import {
-  TCase,
-  TLanguage,
   addKanjies,
   buttonClick,
   clickAlt,
   clickCaps,
   clickShift,
 } from "../../../store/keyboard-slice";
+
+import {
+  AppDispatch,
+  RootState,
+  useAppDispatch,
+  useAppSelector,
+} from "../../../store/store";
+
+import { Keyboard } from "../../../components/keyboard/keyboard";
+
 import { keyboards } from "../../../components/keyboard/keyboard.info";
 
 interface IFlagObj {
@@ -35,58 +34,34 @@ const gridStyles = {
 };
 
 const MemoSymbolGame = (): JSX.Element => {
-  const flattedKeyboard = keyboards.flat();
+  const dispatch = useAppDispatch();
 
-  const kanji: string = useAppSelector(
-    (state: RootState) => state.keyboardState.kanji
+  const { kanji, kanjies, keyboardLetters, language, type } = useAppSelector(
+    (state: RootState) => state.keyboardState
   );
 
-  const kanjies: string[] = useAppSelector(
-    (state: RootState) => state.keyboardState.kanjies
-  );
-
-  const letters: string[] = useAppSelector(
-    (state: RootState) => state.keyboardState.keyboardLetters
-  );
-
-  const language: TLanguage = useAppSelector(
-    (state: RootState) => state.keyboardState?.language
-  );
-
-  const type: TCase = useAppSelector(
-    (state: RootState) => state.keyboardState?.type
-  );
-
-  // blocking muiltiple keyondown keyup
   const flagObject: IFlagObj = {};
-
-  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     dispatch(addKanjies(8));
 
     document.addEventListener("keydown", (event) => {
       if (!flagObject[event.code]) {
-        const transferredLetter = flattedKeyboard.find(
-          (elem) => elem.key === event.code
-        )[language][type];
-        console.log("language", language, "type", type);
-        console.log("transferredLetter", transferredLetter);
         flagObject[event.code] = true;
         switch (event.code) {
           case "ShiftLeft":
           case "ShiftRight":
-            dispatch(clickShift());
+            dispatch(clickShift(true));
             break;
           case "CapsLock":
-            clickCaps();
+            dispatch(clickCaps(true));
             break;
           case "AltLeft":
           case "AltRight":
-            clickAlt();
+            dispatch(clickAlt(true));
             break;
           default:
-            checkAnswer(event.code);
+            dispatch(buttonClick(event.code));
             break;
         }
       }
@@ -98,32 +73,20 @@ const MemoSymbolGame = (): JSX.Element => {
       switch (event.code) {
         case "ShiftLeft":
         case "ShiftRight":
-          dispatch(clickShift());
+          dispatch(clickShift(false));
           break;
         case "CapsLock":
-          clickCaps();
+          dispatch(clickCaps(false));
           break;
         case "AltLeft":
         case "AltRight":
-          clickAlt();
+          dispatch(clickAlt(false));
           break;
         default:
           break;
       }
     });
   }, []);
-
-  function checkAnswer(value: string) {
-    const transferredLetter = flattedKeyboard.find(
-      (elem) => elem.key === value
-    )[language][type];
-    console.log("transferredLetter", transferredLetter);
-    dispatch(buttonClick(transferredLetter));
-  }
-
-  // TODO 1.1 styles (background on wrong click and for guesses or correct positions for guesses )and adaptive
-  // TODO 1.2 buttons logic kanji mode not hira-kata in future symbols
-  // TODO 1.3 Row logic
 
   return (
     <div className="memoSymb">
@@ -132,9 +95,9 @@ const MemoSymbolGame = (): JSX.Element => {
       </div>
       <div
         className="memoSymb__grid"
-        style={letters.length > 10 ? gridStyles : {}}
+        style={keyboardLetters.length > 10 ? gridStyles : {}}
       >
-        {letters.map((letter, i) => (
+        {keyboardLetters.map((letter, i) => (
           <Guess key={letter} letter={letter} kanji={kanjies[i]} />
         ))}
       </div>

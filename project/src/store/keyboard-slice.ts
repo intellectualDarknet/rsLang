@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { keyboards } from "../components/keyboard/keyboard.info";
 
 export type TLanguage = "en" | "ru";
 export type TCase =
@@ -12,42 +13,86 @@ export type TCaps = true | false;
 export interface KeyboardState {
   index: number;
   row: number;
+  level: number;
+  points: number;
+
   language: TLanguage;
   type: TCase;
-  shift: TShift;
-  capslock: TCaps;
+  capslock: boolean;
+  shift: boolean;
+  alt: boolean;
+
   clickedLetter: string;
   expectedLetter: string;
-
-  roundAnswers: number;
-  roundCurrectAnswers: number;
+  mistakeInLetter: string;
 
   kanjies: string[];
   keyboardLetters: string[];
   lettersClicked: string[];
-  alt: boolean;
+  kanjiesToCheck: string[];
   kanji: string;
-  mistakeInLetter: string;
+}
+
+const flattedKeyboard: any[] = keyboards.flat();
+
+function shiftChangeType(value: string) {
+  switch (value) {
+    case "lowercase":
+      return "uppercase";
+      break;
+    case "uppercase":
+      return "lowercase";
+      break;
+    case "capsLowercase":
+      return "capsUppercase";
+      break;
+    case "capsUppercase":
+      return "capsLowercase";
+      break;
+  }
+}
+
+function calculatePoins(points: number, row: number) {
+  return points + 23 * row + 85;
+}
+
+function capsChangeType(value: string) {
+  switch (value) {
+    case "lowercase":
+      return "capsUppercase";
+      break;
+    case "uppercase":
+      return "capsLowercase";
+      break;
+    case "capsLowercase":
+      return "uppercase";
+      break;
+    case "capsUppercase":
+      return "lowercase";
+      break;
+  }
 }
 
 const initialState: KeyboardState = {
   index: 0,
   row: 0,
+  level: 1,
+  points: 0,
+
   language: "en",
   type: "lowercase",
   shift: false,
   capslock: false,
   alt: false,
 
-  roundAnswers: 0,
-  roundCurrectAnswers: 0,
-
-  clickedLetter: "",
-  expectedLetter: "",
-  kanjies: [],
   keyboardLetters: [],
   lettersClicked: [],
+  kanjiesToCheck: [],
+  kanjies: [],
   kanji: "",
+
+  expectedLetter: "",
+  clickedLetter: "",
   mistakeInLetter: "",
 };
 
@@ -127,31 +172,25 @@ const orderredLetters = [
   "P",
 ];
 
-function defineCases(state: KeyboardState) {
-  // checkout mb with caps they are different but who knows
+function GatherKanjiesToCheck(state: KeyboardState) {
+  const kanjiesToCheck: string[] = [];
 
-  switch (+state.shift + +state.capslock) {
-    case 2:
-      state.type = "lowercase";
-      break;
-    case 1:
-      state.type = "uppercase";
-      break;
-    case 0:
-      state.type = "lowercase";
-      break;
-    default:
-      break;
+  while (kanjiesToCheck.length < 0.8 * state.kanjies.length) {
+    const index = Math.round(Math.random() * (state.kanjies.length - 1));
+    if (!kanjiesToCheck.includes(state.kanjies[index])) {
+      kanjiesToCheck.push(state.kanjies[index]);
+    }
   }
-}
 
-function randomize(state: KeyboardState) {
-  const index = Math.round(Math.random() * (state.keyboardLetters.length - 1));
-  console.log("index", index);
-  state.expectedLetter = state.keyboardLetters[index];
-  console.log("expected", state.keyboardLetters[index]);
-  state.kanji = state.kanjies[index];
-  console.log("kanji", state.kanji);
+  console.log("first kanjies", kanjiesToCheck);
+
+  while (kanjiesToCheck.length != state.kanjies.length) {
+    const index = Math.round(Math.random() * (state.kanjies.length - 1));
+    kanjiesToCheck.push(state.kanjies[index]);
+  }
+
+  console.log("first kanjies", kanjiesToCheck);
+  state.kanjiesToCheck = kanjiesToCheck;
 }
 
 function addkanjiesFunction(state: KeyboardState, payload: any) {
@@ -173,44 +212,55 @@ function addkanjiesFunction(state: KeyboardState, payload: any) {
     }
   });
   state.kanjies = [...state.kanjies, ...newkanjiArray];
-  state.index = state.index + payload;
-  state.keyboardLetters = orderredLetters.slice(0, state.index);
-  console.log(state.keyboardLetters);
-  randomize(state);
-  changeKanji();
+  state.keyboardLetters = orderredLetters.slice(0, state.kanjies.length);
+  GatherKanjiesToCheck(state);
+  state.expectedLetter =
+    state.keyboardLetters[
+      state.kanjies.indexOf(state.kanjiesToCheck[state.index])
+    ];
 }
 
 export const keyboardSlice = createSlice({
   name: "keyboard",
-  initialState,
+  initialState: initialState,
   reducers: {
     buttonClick: (state, { payload }: { payload: string }) => {
-      state.clickedLetter = payload;
-      state.roundAnswers = state.roundAnswers + 1;
-      // check logic once again
+      const transferredLetter = flattedKeyboard.find(
+        (elem) => elem.key === payload
+      )[state.language][state.type];
+      console.log("transferredLetter", transferredLetter);
+      console.log("expectedLetter", state.expectedLetter);
+      console.log("mistakeinLetter", state.mistakeInLetter);
+      state.clickedLetter = transferredLetter;
       if (
-        !state.lettersClicked.includes(payload) &&
+        !state.lettersClicked.includes(transferredLetter) &&
         state.expectedLetter == state.clickedLetter
       )
-        state.lettersClicked = [...state.lettersClicked, payload];
+        state.lettersClicked = [...state.lettersClicked, transferredLetter];
       if (state.expectedLetter == state.clickedLetter) {
         state.row = state.row + 1;
-        state.roundCurrectAnswers = state.roundCurrectAnswers + 1;
+        state.index = state.index + 1;
         state.mistakeInLetter = "";
-        randomize(state);
+        state.kanji = state.kanjiesToCheck[state.index];
+        state.expectedLetter =
+          state.keyboardLetters[
+            state.kanjies.indexOf(state.kanjiesToCheck[state.index])
+          ];
+        state.points = calculatePoins(state.points, state.row);
       } else {
-        state.mistakeInLetter = payload;
+        state.mistakeInLetter = transferredLetter;
         state.row = 0;
       }
 
-      if (
-        state.roundCurrectAnswers / state.keyboardLetters.length > 1 &&
-        state.roundCurrectAnswers / state.roundAnswers > 0.8
-      ) {
-        console.log("next round event");
-        state.roundAnswers = 0;
-        state.roundCurrectAnswers = 0;
+      console.log("points", state.points, "level", state.kanjies.length * 100);
+
+      if (state.points > state.kanjies.length * 100) {
+        state.level = ++state.level;
+        state.index = 0;
+        state.points = 0;
         addkanjiesFunction(state, 2);
+        state.kanji = state.kanjiesToCheck[state.index];
+        console.log("updated level", state);
       }
     },
 
@@ -220,45 +270,39 @@ export const keyboardSlice = createSlice({
 
     addKanjies: (state, { payload }: { payload: number }) => {
       addkanjiesFunction(state, payload);
-      console.log("add kanjies");
+      state.kanji = state.kanjiesToCheck[state.index];
     },
 
     changeKanji: (state) => {
-      state.kanji =
-        state.kanjies[Math.round(Math.random() * state.kanjies.length)];
+      state.kanjies[Math.round(Math.random() * state.kanjies.length)];
     },
 
-    clickShift: (state) => {
-      state.shift = !state.shift;
-      switch (state.type) {
-        case "lowercase":
-          state.type = "uppercase";
-          break;
-        case "uppercase":
-          state.type = "lowercase";
-          break;
-        case "capsLowercase":
-          state.type = "capsUppercase";
-          break;
-        case "capsUppercase":
-          state.type = "capsLowercase";
-          break;
+    clickShift: (state, { payload }: { payload: boolean }) => {
+      state.shift = payload;
+      console.log(state.shift, state.alt);
+      if (state.shift && state.alt) {
+        state.language === "en"
+          ? (state.language = "ru")
+          : (state.language = "en");
+      } else {
+        state.type = shiftChangeType(state.type);
       }
     },
 
-    clickCaps: (state) => {
-      state.capslock = !state.capslock;
-      defineCases(state);
+    clickCaps: (state, { payload }: { payload: boolean }) => {
+      state.capslock = payload;
+      console.log(state.shift, state.alt);
+      state.type = capsChangeType(state.type);
     },
 
-    clickAlt: (state) => {
-      state.alt = !state.alt;
-      defineCases(state);
-    },
-
-    changeLanguage: (state) => {
-      state.language = state.language === "en" ? "ru" : "en";
-      defineCases(state);
+    clickAlt: (state, { payload }: { payload: boolean }) => {
+      state.alt = payload;
+      console.log(state.shift, state.alt);
+      if (state.alt && state.shift) {
+        state.language === "en"
+          ? (state.language = "ru")
+          : (state.language = "en");
+      }
     },
   },
 });
@@ -267,7 +311,6 @@ export const {
   buttonClick,
   clickShift,
   clickCaps,
-  changeLanguage,
   addKanjies,
   changeKanji,
   clickAlt,

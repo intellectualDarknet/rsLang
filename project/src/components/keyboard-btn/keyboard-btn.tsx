@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  TCase,
-  TLanguage,
-  clickCaps,
-  clickShift,
-  clickAlt,
-} from "../../store/keyboard-slice";
+import { TCase, TLanguage } from "../../store/keyboard-slice";
 import { AppDispatch, RootState, useAppSelector } from "../../store/store";
 import "./keyboard-btn.scss";
-import { useDispatch } from "react-redux";
 
 interface languageMode {
   lowercase: string;
@@ -17,29 +10,15 @@ interface languageMode {
   capsUppercase: string;
 }
 
-interface keyboardBtnProps {
-  customClass?: string;
-  key: string;
-  ru: languageMode;
-  en: languageMode;
-  color?: string;
-}
-
 export const KeyboardBtn = (props: any): JSX.Element => {
   const btnInfo = props;
-  const [isPressed, TogglePressed] = useState(false);
-  const dispatch: AppDispatch = useDispatch();
 
-  const GlobalLanguage: TLanguage = useAppSelector(
-    (state: RootState) => state.keyboardState?.language || "en"
+  const language: TLanguage = useAppSelector(
+    (state: RootState) => state.keyboardState.language || "en"
   );
 
-  const mistakeInLetter: string = useAppSelector(
-    (state: RootState) => state.keyboardState?.mistakeInLetter
-  );
-
-  const kanji: string = useAppSelector(
-    (state: RootState) => state.keyboardState?.kanji
+  const type: TCase = useAppSelector(
+    (state: RootState) => state.keyboardState.type || "lowercase"
   );
 
   if (btnInfo.props.key === "Quote") {
@@ -51,10 +30,6 @@ export const KeyboardBtn = (props: any): JSX.Element => {
     };
   }
 
-  const type: TCase = useAppSelector(
-    (state: RootState) => state.keyboardState?.type || "lowercase"
-  );
-
   return (
     <>
       <div
@@ -65,7 +40,7 @@ export const KeyboardBtn = (props: any): JSX.Element => {
           btnInfo.props.customClass && btnInfo.props.customClass
         } `}
       >
-        {btnInfo.props[GlobalLanguage][type]}
+        {btnInfo.props[language][type]}
       </div>
     </>
   );

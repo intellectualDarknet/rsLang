@@ -4,10 +4,6 @@ import "./guess.scss";
 import React from "react";
 
 const Guess = (props: any): JSX.Element => {
-  // const clicked: string = useAppSelector(
-  //   (state: RootState) => state.keyboardState?.clickedLetter
-  // );
-
   const lettersClicked: string[] = useAppSelector(
     (state: RootState) => state.keyboardState?.lettersClicked
   );
