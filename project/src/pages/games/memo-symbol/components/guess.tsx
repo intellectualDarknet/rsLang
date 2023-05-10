@@ -19,11 +19,21 @@ const Guess = (props: any): JSX.Element => {
     <>
       {!lettersClicked.includes(props.letter) ||
       (expectedLetter == props.letter && mistakeInLetter) ? (
-        <div className="guess">
+        <div
+          className={
+            expectedLetter == props.letter ? "guess animated" : "guess"
+          }
+        >
           {props.letter} = {props.kanji}
         </div>
       ) : (
-        <div className="guess">{props.kanji}</div>
+        <div
+          className={
+            expectedLetter == props.letter ? "guess animated" : "guess"
+          }
+        >
+          {props.kanji}
+        </div>
       )}
     </>
   );

@@ -4,6 +4,7 @@ import { authService } from "../services/auth-service";
 import { userWordsService } from "../services/user-words-service";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 import { aggregatedWordsService } from "../services/aggregated-words-service";
+import { learnWordsService } from "../services/learn-words-service";
 import { statisticsService } from "../services/statistics-service";
 import wordsReducer from "./words-slice";
 import sequenceReducer from "./sequence-slice";
@@ -14,6 +15,7 @@ import audioCallReducer from "./audiocall-slice";
 import keyboardReducer from "./keyboard-slice";
 import statisticsReducer from "./statistics-slice";
 import hiraganaReducer from "./hira-kata-slice";
+import learnWordsReducer from "./learn-words-slice";
 import { sequenceService } from "../services/sequence-service";
 
 export const rootReducer = combineReducers({
@@ -23,6 +25,7 @@ export const rootReducer = combineReducers({
   [aggregatedWordsService.reducerPath]: aggregatedWordsService.reducer,
   [userWordsService.reducerPath]: userWordsService.reducer,
   [statisticsService.reducerPath]: statisticsService.reducer,
+  [learnWordsService.reducerPath]: learnWordsService.reducer,
   sequenceState: sequenceReducer,
   wordsState: wordsReducer,
   authState: authReducer,
@@ -32,6 +35,7 @@ export const rootReducer = combineReducers({
   sprintState: sprintReducer,
   keyboardState: keyboardReducer,
   hiraganaState: hiraganaReducer,
+  learnWordsState: learnWordsReducer,
 });
 export const setupStore = () => {
   return configureStore({
@@ -40,6 +44,7 @@ export const setupStore = () => {
       getDefaultMiddleware({
         serializableCheck: false,
       }).concat(
+        learnWordsService.middleware,
         sequenceService.middleware,
         wordsService.middleware,
         authService.middleware,

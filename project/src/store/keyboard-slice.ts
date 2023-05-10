@@ -199,12 +199,8 @@ function addkanjiesFunction(state: KeyboardState, payload: any) {
   new Array(payload).fill(2).forEach((elem) => {
     while (newkanjiArray.length < payload) {
       newValue = String.fromCharCode(
-        // hira kata if you are want to go easy on you
-        Math.round((12543 - 12448) * Math.random() + 12448)
+        Math.round((40879 - 19968) * Math.random() + 19968)
       );
-      // newValue = String.fromCharCode(
-      //   Math.round((40879 - 19968) * Math.random() + 19968)
-      // );
       if (
         !(state.kanjies.includes(newValue) || newkanjiArray.includes(newValue))
       )

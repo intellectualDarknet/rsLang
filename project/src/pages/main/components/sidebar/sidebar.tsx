@@ -168,6 +168,17 @@ function Sidebar() {
                   ? "sidebar__link sidebar__link_active"
                   : "sidebar__link"
               }
+              to="/learnWordsGame"
+            >
+              learnWordsGame
+            </NavLink>
+            <NavLink
+              onClick={() => setMobileMenuFlag(false)}
+              className={({ isActive }) =>
+                location.pathname.includes("textbook")
+                  ? "sidebar__link sidebar__link_active"
+                  : "sidebar__link"
+              }
               to="/hiragana"
             >
               Hiragana

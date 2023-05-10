@@ -1,6 +1,23 @@
 .guess {
   text-align: center;
   background-color: #9b9bce;
-  border-radius: 25%;
+  border-radius: 25px;
   font-size: 70px
+}
+
+.animated {
+  animation: color-change2 2s infinite;
+  background-color: #cacaec;
+}
+
+@keyframes color-change2 {
+  0% {
+    background-color: #f67efa;
+  }
+  50% {
+    background-color: #cacaec;
+  }
+  100% {
+    background-color: #f67efa;
+  }
 }

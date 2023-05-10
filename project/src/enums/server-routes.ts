@@ -8,4 +8,5 @@ export enum ServerRoutes {
   settings = "/settings",
   tokens = "/tokens",
   aggregatedWords = "/aggregatedWords",
+  learnWords = "/memo",
 }

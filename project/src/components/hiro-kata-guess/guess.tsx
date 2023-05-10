@@ -4,18 +4,28 @@ import React from "react";
 import { RootState, useAppSelector } from "../../store/store";
 
 const Guess = (props: any): JSX.Element => {
-  const { mistakesArray, expectedKanji, expectedAnswer } = useAppSelector(
+  const { answersArray, expectedKanji } = useAppSelector(
     (state: RootState) => state.hiraganaState
   );
 
   return (
     <>
-      {mistakesArray.includes(props.letter) ? (
-        <div className="guess">
+      {!answersArray.includes(props.letter) ? (
+        <div
+          className={
+            expectedKanji === props.kanji ? "guessABC animated" : "guessABC"
+          }
+        >
           {props.letter} = {props.kanji}
         </div>
       ) : (
-        <div className="guess">{props.kanji}</div>
+        <div
+          className={
+            expectedKanji === props.kanji ? "guessABC animated" : "guessABC"
+          }
+        >
+          {props.kanji}
+        </div>
       )}
     </>
   );

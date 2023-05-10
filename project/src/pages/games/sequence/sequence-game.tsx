@@ -6,8 +6,6 @@ import React, {
   useRef,
 } from "react";
 
-import { useGetWordsMutation } from "../../../services/words-service";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { AppDispatch, RootState, useAppSelector } from "../../../store/store";
 import {
   GetSequenceWordsRequest,
@@ -81,7 +79,6 @@ const SequenceGame = (): JSX.Element => {
     };
     // TODO rethink logic
 
-    console.log(userId, request, "request");
     if (userId) {
       createSequence(request);
       getSequences({ userId });
@@ -107,7 +104,7 @@ const SequenceGame = (): JSX.Element => {
               ))}
             </div>
           ))}
-          <div className="  sequence__buttons">
+          <div className="sequence__buttons">
             <button
               onClick={Memorize}
               className=" sequence__button sequence__memorize"

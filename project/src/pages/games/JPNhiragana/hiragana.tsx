@@ -12,19 +12,10 @@ import {
   useAppSelector,
 } from "../../../store/store";
 import {
-  addMistakeInArray,
-  // backSpace,
-  // nullifyAnswer,
-  // changeAnswer,
-  deleteMistakeFromArray,
+  addAnswerInArray,
+  deleteAnswerFromArray,
   nextKanji,
 } from "../../../store/hira-kata-slice";
-
-const gridStyles = {
-  gridTemplateColumns: `repeat(8, 1fr)`,
-  gap: "25px",
-  margin: "40px 2vw",
-};
 
 interface IHiragana {
   [key: string]: string[];
@@ -34,30 +25,29 @@ interface IFlagObj {
   [key: string]: boolean;
 }
 
-const hiraganaObj: IHiragana = {
+export const hiraganaObj: IHiragana = {
   а: ["а", "あ"],
   ка: ["ка", "か"],
+  га: ["га", "が "],
+
   са: ["са", "さ"],
-  та: ["та", "た"],
   на: ["на", "な"],
-  ха: ["ха", "は"],
   ма: ["ма", "ま"],
   ра: ["ра", "ら"],
   ва: ["ва", "わ"],
   и: ["и", "い"],
   ки: ["ки", "き"],
   си: ["си", "し"],
+  дзи: ["дзи", "じ/ぢ"],
   ти: ["ти", "ち"],
   ни: ["ни", "に"],
   хи: ["хи", "ひ"],
   ми: ["ми", "み"],
   ри: ["ри", "り"],
   у: ["у", "う"],
-  ку: ["ку", "く"],
   су: ["су", "す"],
   цу: ["цу", "つ"],
   ну: ["ну", "ぬ"],
-  фу: ["фу", "ふ"],
   му: ["му", "む"],
   ру: ["ру", "る"],
   ю: ["ю", "ゆ"],
@@ -66,12 +56,10 @@ const hiraganaObj: IHiragana = {
   сэ: ["сэ", "せ"],
   тэ: ["тэ", "て"],
   нэ: ["нэ", "ね"],
-  хэ: ["хэ", "へ"],
   мэ: ["мэ", "め"],
   рэ: ["рэ", "れ"],
   во: ["во", "を"],
   о: ["о", "お"],
-  ко: ["ко", "こ"],
   со: ["со", "そ"],
   то: ["то", "と"],
   но: ["но", "の"],
@@ -81,29 +69,40 @@ const hiraganaObj: IHiragana = {
   я: ["я", "ゃ"],
   ё: ["ё", "ょ"],
 
-  га: ["га", "が "],
   дза: ["дза", "ざ "],
+
+  та: ["та", "た"],
   да: ["да", "だ "],
+
   ба: ["ба", "ば "],
+  ха: ["ха", "は"],
   па: ["па", "ぱ "],
+
   ги: ["ги", "ぎ"],
-  дзи: ["дзи", "じ"],
   би: ["би", "び"],
   пи: ["пи", "ぴ"],
+
   гу: ["гу", "ぐ"],
-  дзу: ["дзу", "ず"],
-  бу: ["бу", "ぶ"],
+  ку: ["ку", "く"],
+
+  дзу: ["дзу", "ず/づ"],
   пу: ["пу", "ぷ"],
+  бу: ["бу", "ぶ"],
+  фу: ["фу", "ふ"],
+
   гэ: ["гэ", "げ"],
   дзэ: ["дзэ", "ぜ"],
   бэ: ["бэ", "べ"],
+  хэ: ["хэ", "へ"],
   пэ: ["пэ", "ぺ"],
   го: ["го", "ご"],
+  ко: ["ко", "こ"],
+
   дзо: ["дзо", "ぞ"],
   бо: ["бо", "ぼ"],
   по: ["по", "ぽ"],
 
-  // кя: ["кя", "きゃ"],
+  // кя: ["кя", "きゃ"],Ц
   // ся: ["ся", "しゃ"],
   // тя: ["тя", "ちゃ"],
   // ня: ["ня", "にゃ"],
@@ -148,9 +147,8 @@ const HiraganaGame = (): JSX.Element => {
   const flagObject: IFlagObj = {};
   const flattedKeyboard = keyboards.flat();
   const HiraganaKeys = Object.keys(hiraganaObj);
-  const inputRef = useRef(null);
 
-  const { mistakesArray, expectedKanji, expectedAnswer } = useAppSelector(
+  const { expectedKanji, expectedAnswer } = useAppSelector(
     (state: RootState) => state.hiraganaState
   );
 
@@ -171,19 +169,20 @@ const HiraganaGame = (): JSX.Element => {
         const index = Math.round(Math.random() * (HiraganaKeys.length - 1));
         const expectedKanji = hiraganaObj?.[HiraganaKeys[index]]?.[1];
         const expectedAnswer = hiraganaObj?.[HiraganaKeys[index]]?.[0];
-        dispatch(deleteMistakeFromArray(expectedAnswer));
+        dispatch(addAnswerInArray(answer));
         console.log(expectedKanji, expectedAnswer);
         dispatch(nextKanji({ expectedKanji, expectedAnswer }));
       } else {
-        dispatch(addMistakeInArray(expectedAnswer));
+        console.log("try to delete answer");
+        dispatch(deleteAnswerFromArray(expectedAnswer));
       }
       setAnswer("");
-      // dispatch(nullifyAnswer());
     }
   }, [answer]);
 
   useEffect(() => {
     document.addEventListener("keydown", (event) => {
+      console.log(event.code);
       if (!flagObject[event.code]) {
         flagObject[event.code] = true;
         switch (event.code) {
@@ -192,9 +191,17 @@ const HiraganaGame = (): JSX.Element => {
           case "CapsLock":
           case "AltLeft":
           case "AltRight":
+          case "ControlLeft":
+          case "ControlRight":
+          case "Enter":
             break;
           case "Backspace":
-            // dispatch(backSpace());
+            setAnswer((prev) => {
+              if (prev.length) {
+                return prev.slice(0, prev.length - 1);
+              }
+              return prev;
+            });
             break;
           default:
             buttonClick(event.code);
@@ -213,6 +220,7 @@ const HiraganaGame = (): JSX.Element => {
       <div className="hiragana__kangi">
         <div className="hiragana__elem">{expectedKanji}</div>
       </div>
+      <div className="hiragana__answer">{answer}</div>
       <div className="hiragana__grid">
         {HiraganaKeys.map((letter) => (
           <Guess
@@ -222,7 +230,6 @@ const HiraganaGame = (): JSX.Element => {
           />
         ))}
       </div>
-      <div>{answer}</div>
       <Keyboard keyboard={keyboards} />
     </div>
   );

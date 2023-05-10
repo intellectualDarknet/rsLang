@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { keyboards } from "../components/keyboard/keyboard.info";
 
 export interface IHiraKata {
-  mistakesArray: string[];
+  answersArray: string[];
   expectedKanji: string;
   expectedAnswer: string;
-  // answer: string;
 }
 
 interface INext {
@@ -14,119 +12,34 @@ interface INext {
 }
 
 const initialState: IHiraKata = {
-  mistakesArray: [
-    "а",
-    "ка",
-    "са",
-    "та",
-    "на",
-    "ха",
-    "ма",
-    "ра",
-    "ва",
-    "и",
-    "ки",
-    "си",
-    "ти",
-    "ни",
-    "хи",
-    "ми",
-    "ри",
-    "у",
-    "ку",
-    "су",
-    "цу",
-    "ну",
-    "фу",
-    "му",
-    "ру",
-    "ю",
-    "э",
-    "кэ",
-    "сэ",
-    "тэ",
-    "нэ",
-    "хэ",
-    "мэ",
-    "рэ",
-    "во",
-    "о",
-    "ко",
-    "со",
-    "то",
-    "но",
-    "хо",
-    "мо",
-    "ро",
-    "я",
-    "ё",
-    "га",
-    "дза",
-    "да",
-    "ба",
-    "па",
-    "ги",
-    "дзи",
-    "би",
-    "пи",
-    "гу",
-    "дзу",
-    "бу",
-    "пу",
-    "гэ",
-    "дзэ",
-    "бэ",
-    "пэ",
-    "го",
-    "дзо",
-    "бо",
-    "по",
-  ],
-  expectedKanji: "あ",
-  expectedAnswer: "а",
-  // answer: "",
+  answersArray: [],
+  expectedKanji: "1",
+  expectedAnswer: "1",
 };
 
 export const HiraganaSlice = createSlice({
   name: "hiragana",
   initialState: initialState,
   reducers: {
-    addMistakeInArray: (state, { payload }: { payload: string }) => {
-      state.mistakesArray.push(payload);
+    addAnswerInArray: (state, { payload }: { payload: string }) => {
+      state.answersArray = [...state.answersArray, payload];
+      console.log(state.answersArray);
     },
 
-    deleteMistakeFromArray: (state, { payload }: { payload: string }) => {
-      state.mistakesArray.filter((elem) => elem === payload);
+    deleteAnswerFromArray: (state, { payload }: { payload: string }) => {
+      console.log(state.answersArray);
+      state.answersArray = state.answersArray.filter((elem) => elem != payload);
+      console.log(state.answersArray);
     },
 
     nextKanji: (state, { payload }: { payload: INext }) => {
       state.expectedKanji = payload.expectedKanji;
       state.expectedAnswer = payload.expectedAnswer;
     },
-
-    // changeAnswer: (state, { payload }: { payload: string }) => {
-    //   state.answer = state.answer + payload;
-    // },
-
-    // nullifyAnswer: (state) => {
-    //   state.answer = "";
-    // },
-
-    // backSpace: (state) => {
-    //   state.answer.length
-    //     ? (state.answer = state.answer.slice(0, state.answer.length - 1))
-    //     : null;
-    // },
   },
 });
 
-export const {
-  addMistakeInArray,
-  deleteMistakeFromArray,
-  nextKanji,
-  // changeAnswer,
-  // nullifyAnswer,
-  // backSpace,
-} = HiraganaSlice.actions;
+export const { addAnswerInArray, deleteAnswerFromArray, nextKanji } =
+  HiraganaSlice.actions;
 
 export default HiraganaSlice.reducer;
