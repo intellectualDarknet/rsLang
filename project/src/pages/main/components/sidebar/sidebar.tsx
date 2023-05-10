@@ -137,7 +137,7 @@ function Sidebar() {
             >
               Textbook
             </NavLink>
-
+            {/* 
             <NavLink
               onClick={() => setMobileMenuFlag(false)}
               className={({ isActive }) =>
@@ -148,7 +148,7 @@ function Sidebar() {
               to="/sequence"
             >
               Sequence
-            </NavLink>
+            </NavLink> */}
 
             <NavLink
               onClick={() => setMobileMenuFlag(false)}
@@ -161,7 +161,7 @@ function Sidebar() {
             >
               Memo symbol
             </NavLink>
-            <NavLink
+            {/* <NavLink
               onClick={() => setMobileMenuFlag(false)}
               className={({ isActive }) =>
                 location.pathname.includes("textbook")
@@ -171,7 +171,7 @@ function Sidebar() {
               to="/learnWordsGame"
             >
               learnWordsGame
-            </NavLink>
+            </NavLink> */}
             <NavLink
               onClick={() => setMobileMenuFlag(false)}
               className={({ isActive }) =>
