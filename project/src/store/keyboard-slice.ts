@@ -310,6 +310,7 @@ export const {
   addKanjies,
   changeKanji,
   clickAlt,
+  changeCase,
 } = keyboardSlice.actions;
 
 export default keyboardSlice.reducer;

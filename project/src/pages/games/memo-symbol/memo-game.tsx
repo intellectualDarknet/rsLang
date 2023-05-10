@@ -10,6 +10,7 @@ import {
   clickAlt,
   clickCaps,
   clickShift,
+  changeCase,
 } from "../../../store/keyboard-slice";
 
 import {
@@ -36,8 +37,24 @@ const gridStyles = {
 const MemoSymbolGame = (): JSX.Element => {
   const dispatch = useAppDispatch();
 
-  const { kanji, kanjies, keyboardLetters, language, type } = useAppSelector(
-    (state: RootState) => state.keyboardState
+  const kanji: string = useAppSelector(
+    (state: RootState) => state.keyboardState.kanji
+  );
+
+  const kanjies: string[] = useAppSelector(
+    (state: RootState) => state.keyboardState.kanjies
+  );
+
+  const letters: string[] = useAppSelector(
+    (state: RootState) => state.keyboardState.keyboardLetters
+  );
+
+  const language: TLanguage = useAppSelector(
+    (state: RootState) => state.keyboardState?.language
+  );
+
+  const type: TCase = useAppSelector(
+    (state: RootState) => state.keyboardState?.type
   );
 
   const flagObject: IFlagObj = {};
@@ -87,6 +104,18 @@ const MemoSymbolGame = (): JSX.Element => {
       }
     });
   }, []);
+
+  function checkAnswer(value: string) {
+    const transferredLetter = flattedKeyboard.find(
+      (elem) => elem.key === value
+    )[language][type];
+    console.log("transferredLetter", transferredLetter);
+    dispatch(buttonClick(transferredLetter));
+  }
+
+  // TODO 1.1 styles (background on wrong click and for guesses or correct positions for guesses )and adaptive
+  // TODO 1.2 buttons logic kanji mode not hira-kata in future symbols
+  // TODO 1.3 Row logic
 
   return (
     <div className="memoSymb">
