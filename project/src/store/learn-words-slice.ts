@@ -8,8 +8,8 @@ interface IWordsState {
 }
 
 const initialState: IWordsState = {
-  wordsToRepeat: null,
-  wordsToLearn: null,
+  wordsToRepeat: [],
+  wordsToLearn: [],
 };
 
 export const learnWordsSlice = createSlice({

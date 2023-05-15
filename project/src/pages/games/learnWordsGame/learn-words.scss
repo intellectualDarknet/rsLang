@@ -37,8 +37,10 @@
   }
 
   &__add {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    font-size: 20px;
   }
 
   &__input {
@@ -73,5 +75,13 @@
 
   &__learn {
 
+  }
+
+  &__input {
+    background-color: transparent;
+  }
+
+  &__button {
+    margin: 0 auto
   }
 }

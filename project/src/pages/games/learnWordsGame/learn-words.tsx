@@ -27,7 +27,7 @@ const LearnWordsGame = (): JSX.Element => {
   const [getWordsToLearn] = useGetWordsToLearnMutation();
 
   const [mode, setMode] = useState(true);
-  const [showFlag, setShowFlag] = useState(false);
+  const [showFlag, setShowFlag] = useState(true);
 
   const wordsToRepeat: ILearnWord[] = useAppSelector(
     (state: RootState) => state.learnWordsState.wordsToRepeat || []
@@ -40,31 +40,35 @@ const LearnWordsGame = (): JSX.Element => {
   console.log("wordsToRepeat", wordsToRepeat);
   console.log("wordsToLearn", wordsToLearn);
 
-  function memorized(event: React.SyntheticEvent) {
-    console.log(
-      (event.target as HTMLElement).closest("div").querySelector("input").value
-    );
+  function onInputBlur(event: React.SyntheticEvent) {
+    const inputHtml = event.target as HTMLInputElement;
+    const word = wordsToLearn.find((elem) => elem.id == inputHtml.dataset.id);
+    updateWord({
+      userId,
+      wordId: word.id,
+      word: { ...word, howToRemember: inputHtml.value },
+    });
   }
+
+  function fetchNewWords() {
+    getWordsToLearn({ userId, word: { limit: wordsToLearn.length + 10 } });
+  }
+
   function show() {
-    console.log(123);
+    setShowFlag((prev) => !prev);
   }
-  function repeat() {
-    console.log(123);
+
+  function repeat(event: React.MouseEvent) {
+    const buttonHtml = event.target as HTMLButtonElement;
+    const word = wordsToRepeat.find((elem) => elem.id == buttonHtml.dataset.id);
+    updateWord({
+      userId,
+      wordId: word.id,
+      word: { ...word },
+    });
   }
   function addNewWord() {
-    console.log(123);
-  }
-
-  function changeLearnWord(event: React.ChangeEvent<HTMLInputElement>) {
-    wordsToLearn.find(
-      (elem) => elem.id == event.target.dataset.id
-    ).howToRemember = event.target.value;
-  }
-
-  function changeRepeatWord(event: React.ChangeEvent<HTMLInputElement>) {
-    wordsToRepeat.find(
-      (elem) => elem.id == event.target.dataset.id
-    ).howToRemember = event.target.value;
+    // createWord
   }
 
   useEffect(() => {
@@ -72,48 +76,16 @@ const LearnWordsGame = (): JSX.Element => {
     getWordsToLearn({ userId });
   }, []);
 
-  useEffect(() => {
-    document.addEventListener("keydown", (event) => {
-      console.log(event.code);
-      if (!flagObject[event.code]) {
-        flagObject[event.code] = true;
-        switch (event.code) {
-          case "ShiftLeft":
-          case "ShiftRight":
-          case "CapsLock":
-          case "AltLeft":
-          case "AltRight":
-          case "ControlLeft":
-          case "ControlRight":
-            break;
-          case "Backspace":
-            // setAnswer((prev) => {
-            //   if (prev.length) {
-            //     return prev.slice(0, prev.length - 1);
-            //   }
-            //   return prev;
-            // });
-            break;
-          default:
-            // buttonClick(event.code);
-            break;
-        }
-      }
-    });
-
-    // window.addEventListener("keyup", (event) => {});
-  }, []);
-
   return (
     <div className="learnWordsGame">
       <div className="learnWordsGame__modes">
         {mode ? (
           <div onClick={() => setMode(false)} className="learnWordsGame__mode">
-            Learn
+            Repeat
           </div>
         ) : (
           <div onClick={() => setMode(true)} className="learnWordsGame__mode">
-            Repeat
+            Learn
           </div>
         )}
       </div>
@@ -141,11 +113,17 @@ const LearnWordsGame = (): JSX.Element => {
                   className="learnWordsGame__writings"
                   data-id={repeatWord.id}
                   defaultValue={repeatWord.howToRemember}
-                  onChange={changeRepeatWord}
                 />
                 <span className="learnWordsGame__meaning">
                   {repeatWord.meaning}
                 </span>
+                <button
+                  data-id={repeatWord.id}
+                  onClick={repeat}
+                  className="learnWordsGame__repeat"
+                >
+                  Memo
+                </button>
               </div>
             ))
           : wordsToLearn.map((repeatWord) => (
@@ -163,52 +141,64 @@ const LearnWordsGame = (): JSX.Element => {
                   type="text"
                   data-id={repeatWord.id}
                   placeholder="assosiation"
+                  className="learnWordsGame__input"
                   defaultValue={repeatWord.howToRemember}
-                  onChange={changeLearnWord}
+                  onBlur={onInputBlur}
                 />
                 <span className="learnWordsGame__meaning">
                   {repeatWord.meaning}
                 </span>
-                <button className="learnWordsGame__learn" onClick={memorized}>
-                  Изучить
-                </button>
               </div>
             ))}
       </div>
 
-      <div className="learnWordsGame__buttons">
+      {mode ? (
         <button className="learnWordsGame__button" onClick={show}>
           Показать
         </button>
-      </div>
-      <div className="learnWordsGame__add">
-        <input
-          placeholder="kanji"
-          className="learnWordsGame__input"
-          type="text"
-        />
-        <input
-          placeholder="hira/kata"
-          className="learnWordsGame__input"
-          type="text"
-        />
-        <input
-          placeholder="add meaning"
-          className="learnWordsGame__input"
-          type="text"
-        />
-        <input
-          placeholder="assosiation"
-          className="learnWordsGame__input"
-          type="text"
-        />
-      </div>
-      <div className="learnWordsGame__buttons">
-        {" "}
-        <button className="learnWordsGame__button" onClick={addNewWord}>
-          Добавить новое слово
-        </button>
-      </div>
+      ) : (
+        <>
+          <button
+            className="learnWordsGame__button learnWordsGame__button10"
+            onClick={fetchNewWords}
+          >
+            Добавить новые 10 слов
+          </button>
+
+          <div className="learnWordsGame__newWord">
+            <button className="learnWordsGame__button" onClick={addNewWord}>
+              Добавить новое слово
+            </button>
+            <div className="learnWordsGame__add">
+              <input
+                placeholder="kanji"
+                className="learnWordsGame__input"
+                type="text"
+              />
+              <input
+                placeholder="hira/kata"
+                className="learnWordsGame__input"
+                type="text"
+              />
+              <input
+                placeholder="assosiation"
+                className="learnWordsGame__input"
+                type="text"
+              />
+              <input
+                placeholder="add meaning"
+                className="learnWordsGame__input"
+                type="text"
+              />
+              <input
+                placeholder="add sign for future search"
+                className="learnWordsGame__input"
+                type="text"
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

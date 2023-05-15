@@ -46,15 +46,15 @@ export const learnWordsService = createApi({
     getWordsToRepeat: build.mutation<ILearnWord[], RepeatWordsRequest>({
       query: (obj: RepeatWordsRequest) => ({
         url: `${ServerRoutes.learnWords}/${obj.userId}/repeat`,
-        method: HTTPMethods.GET,
+        method: HTTPMethods.POST,
         body: obj.word,
       }),
     }),
 
-    getWordsToLearn: build.mutation<ILearnWord[], RepeatWordsRequest>({
-      query: (obj: RepeatWordsRequest) => ({
+    getWordsToLearn: build.mutation<ILearnWord[], LearnWordsRequest>({
+      query: (obj: LearnWordsRequest) => ({
         url: `${ServerRoutes.learnWords}/${obj.userId}/learn`,
-        method: HTTPMethods.GET,
+        method: HTTPMethods.POST,
         body: obj.word,
       }),
     }),

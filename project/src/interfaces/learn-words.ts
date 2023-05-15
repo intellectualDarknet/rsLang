@@ -5,13 +5,14 @@ export interface ILearnWord {
   writings: string;
   meaning: string;
   howToRemember: string;
-  inRow: number;
-  date_to_repeat: Date;
-  sign: string;
-  language: string;
+  inRow?: number;
+  date_to_repeat?: Date;
+  sign?: string;
+  language?: string;
 }
 
 export interface ILearnWordOpt {
+  limit?: number;
   sign?: string;
   language?: string;
 }
@@ -30,7 +31,7 @@ export interface LearnWordResponse {
 
 export interface LearnWordsRequest {
   userId: string;
-  word: ILearnWordOpt;
+  word?: ILearnWordOpt;
 }
 
 export interface UpdateLearnWordRequest {
